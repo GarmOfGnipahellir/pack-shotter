@@ -49,17 +49,16 @@ class PackShotterRenderNode(PackShotterNode):
     bl_idname = "PackShotterRenderNode"
     bl_label = "Render"
     bl_icon = 'RENDER_STILL'
-    bl_width_default = 100
+    bl_width_default = 200
 
-    image: bpy.props.PointerProperty(type=bpy.types.Image, name="Image",
-                                     description="The image that wil have it's file changed for different variations")
     folder: bpy.props.StringProperty(
-        subtype='DIR_PATH', name="Folder", description="The folder which contains the image variations")
+        subtype='DIR_PATH', name="Folder", description="The output folder")
 
     def init(self, context):
         self.inputs.new('NodeSocketVirtual', "Input")
 
     def draw_buttons(self, context, layout):
+        layout.prop(self, "folder")
         layout.operator(PackShotterRender.bl_idname)
 
 
@@ -111,7 +110,7 @@ class PackShotterRender(bpy.types.Operator):
             file_name = bpy.path.display_name(file)
             file_relpath = bpy.path.relpath(os.path.join(folder_abspath, file))
 
-            context.scene.render.filepath = f"//..\\Render\\{blend_name}_{file_name}.png"
+            context.scene.render.filepath = os.path.join(self.node.folder, f"{blend_name}_{file_name}.png")
             input_node.image.filepath = file_relpath
             bpy.ops.render.render(write_still=True)
 
