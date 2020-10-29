@@ -30,7 +30,7 @@ class PackShotterVariationsNode(PackShotterNode):
 
 class PackShotterImageVariationsNode(PackShotterVariationsNode):
     bl_idname = "PackShotterImageVariationsNode"
-    bl_label = "Image Variation"
+    bl_label = "Image Variations"
     bl_icon = 'FILE_IMAGE'
     bl_width_default = 200
 
@@ -59,9 +59,87 @@ class PackShotterImageVariationsNode(PackShotterVariationsNode):
         return len(os.listdir(bpy.path.abspath(self.folder)))
 
 
+class MeshVariationsMesh(bpy.types.PropertyGroup):
+    value: bpy.props.PointerProperty(type=bpy.types.Mesh)
+
+
+class AddMeshVariationsMesh(bpy.types.Operator):
+    bl_idname = "packshotter.add_mesh_variations_mesh"
+    bl_label = "Add"
+    bl_icon = 'PLUS'
+
+    def invoke(self, context, event):
+        self.node = context.node
+        return self.execute(context)
+
+    def execute(self, context):
+        self.node.meshes.add()
+        return {'FINISHED'}
+
+
+class RemoveMeshVariationsMesh(bpy.types.Operator):
+    bl_idname = "packshotter.remove_mesh_variations_mesh"
+    bl_label = "Clear"
+    bl_icon = 'MINUS'
+
+    def invoke(self, context, event):
+        self.node = context.node
+        return self.execute(context)
+
+    def execute(self, context):
+        self.node.meshes.clear()
+        return {'FINISHED'}
+
+
+class MESH_UL_meshes(bpy.types.UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
+        layout.prop(item, "value", text="", emboss=True, icon_value=icon)
+
+
+class PackShotterMeshVariationsNode(PackShotterVariationsNode):
+    bl_idname = "PackShotterMeshVariationsNode"
+    bl_label = "Mesh Variations"
+    bl_icon = 'FILE_IMAGE'
+    bl_width_default = 200
+
+    obj: bpy.props.PointerProperty(type=bpy.types.Object, name="Object",
+                                   description="The object that will have it's mesh changed for different variations")
+    meshes: bpy.props.CollectionProperty(
+        type=MeshVariationsMesh, name="Meshes")
+    active_mesh: bpy.props.IntProperty(default=0)
+
+    def init(self, context):
+        self.inputs.new('NodeSocketVirtual', "Input")
+        self.outputs.new('NodeSocketVirtual', "Output")
+
+    def draw_buttons(self, context, layout):
+        layout.prop(self, "obj")
+        layout.template_list(
+            "MESH_UL_meshes", "", self, "meshes", self, "active_mesh")
+        layout.operator(AddMeshVariationsMesh.bl_idname)
+        layout.operator(RemoveMeshVariationsMesh.bl_idname)
+
+    def apply_variation(self, index):
+        self.obj.data = self.meshes[index].value
+
+    def get_variation_name(self, index):
+        return self.meshes[index].value.name
+
+    def get_num_variations(self):
+        return len(self.meshes)
+
+
 category = PackShotterNodeCategory("VARIATIONS", "Variations", items=[
-    nodeitems_utils.NodeItem(PackShotterImageVariationsNode.bl_idname)
+    nodeitems_utils.NodeItem(PackShotterImageVariationsNode.bl_idname),
+    nodeitems_utils.NodeItem(PackShotterMeshVariationsNode.bl_idname),
 ])
 
 
-REGISTER_CLASSES = (PackShotterImageVariationsNode,)
+REGISTER_CLASSES = (
+    PackShotterImageVariationsNode,
+    MeshVariationsMesh,
+    AddMeshVariationsMesh,
+    RemoveMeshVariationsMesh,
+    MESH_UL_meshes,
+    PackShotterMeshVariationsNode,
+)
