@@ -30,7 +30,7 @@ class PackShotterVariationsNode(PackShotterNode):
     def apply_variation(self, index):
         raise NotImplementedError
 
-    def revert_variation(self, index):
+    def revert_variation(self):
         raise NotImplementedError
 
     def get_variation_name(self, index):
