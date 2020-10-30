@@ -37,7 +37,7 @@ class PackShotterVariationsNode(PackShotterNode):
         raise NotImplementedError
 
     def get_num_variations(self):
-        return 0
+        raise NotImplementedError
 
 
 # ---------------------------------------------------------------------------- #
