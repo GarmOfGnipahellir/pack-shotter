@@ -30,6 +30,9 @@ class PackShotterVariationsNode(PackShotterNode):
     def apply_variation(self, index):
         raise NotImplementedError
 
+    def revert_variation(self, index):
+        raise NotImplementedError
+
     def get_variation_name(self, index):
         raise NotImplementedError
 
@@ -57,8 +60,12 @@ class PackShotterImageVariationsNode(PackShotterVariationsNode):
         layout.prop(self, "folder")
 
     def apply_variation(self, index):
+        _tmp_filepath = self.image.filepath
         file = os.listdir(bpy.path.abspath(self.folder))[index]
         self.image.filepath = os.path.join(self.folder, file)
+
+    def revert_variation(self):
+        self.image.filepath = _tmp_filepath
 
     def get_variation_name(self, index):
         file = os.listdir(bpy.path.abspath(self.folder))[index]
@@ -83,11 +90,14 @@ class PackShotterCollectionVariations(PackShotterVariationsNode):
 
     def draw_buttons(self, context, layout):
         layout.prop(self, "collection")
-        
+
     def apply_variation(self, index):
         for i, child in enumerate(self.collection.children):
             child.hide_render = False if i == index else True
-            child.hide_viewport = False if i == index else True
+
+    def revert_variation(self):
+        for i, child in enumerate(self.collection.children):
+            child.hide_render = False
 
     def get_variation_name(self, index):
         return self.collection.children[index].name
@@ -161,7 +171,11 @@ class PackShotterMeshVariationsNode(PackShotterVariationsNode):
         layout.operator(RemoveMeshVariationsMesh.bl_idname)
 
     def apply_variation(self, index):
+        _tmp_mesh = self.obj.data
         self.obj.data = self.meshes[index].value
+    
+    def revert_variation(self):
+        self.obj.data = _tmp_mesh
 
     def get_variation_name(self, index):
         return self.meshes[index].value.name
