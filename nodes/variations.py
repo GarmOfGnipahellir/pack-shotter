@@ -4,6 +4,11 @@ import nodeitems_utils
 from .common import PackShotterNode, PackShotterNodeCategory
 
 
+# ---------------------------------------------------------------------------- #
+#                                   Base Type                                  #
+# ---------------------------------------------------------------------------- #
+
+
 class PackShotterVariationsNode(PackShotterNode):
     def __iter__(self):
         self._current = 0
@@ -26,6 +31,11 @@ class PackShotterVariationsNode(PackShotterNode):
 
     def get_num_variations(self):
         return 0
+
+
+# ---------------------------------------------------------------------------- #
+#                               Image Variations                               #
+# ---------------------------------------------------------------------------- #
 
 
 class PackShotterImageVariationsNode(PackShotterVariationsNode):
@@ -57,6 +67,11 @@ class PackShotterImageVariationsNode(PackShotterVariationsNode):
 
     def get_num_variations(self):
         return len(os.listdir(bpy.path.abspath(self.folder)))
+
+
+# ---------------------------------------------------------------------------- #
+#                                Mesh Variations                               #
+# ---------------------------------------------------------------------------- #
 
 
 class MeshVariationsMesh(bpy.types.PropertyGroup):
@@ -127,6 +142,11 @@ class PackShotterMeshVariationsNode(PackShotterVariationsNode):
 
     def get_num_variations(self):
         return len(self.meshes)
+
+
+# ---------------------------------------------------------------------------- #
+#                            Registration Constants                            #
+# ---------------------------------------------------------------------------- #
 
 
 category = PackShotterNodeCategory("VARIATIONS", "Variations", items=[
