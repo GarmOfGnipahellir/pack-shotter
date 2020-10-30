@@ -2,7 +2,7 @@ import os
 import bpy
 import nodeitems_utils
 from .common import PackShotterNode, PackShotterNodeCategory
-from ..sockets.common import VariationsSocket
+from ..sockets.common import VariationsSocket, FilesSocket
 
 
 # ---------------------------------------------------------------------------- #
@@ -55,6 +55,10 @@ class PackShotterImageVariationsNode(PackShotterVariationsNode):
                                      description="The image that wil have it's file changed for different variations")
     folder: bpy.props.StringProperty(
         subtype='DIR_PATH', name="Folder", description="The folder which contains the image variations")
+
+    def init(self, context):
+        super().init(context)
+        self.inputs.new(FilesSocket.bl_idname, "Images")
 
     def draw_buttons(self, context, layout):
         layout.prop(self, "image")
