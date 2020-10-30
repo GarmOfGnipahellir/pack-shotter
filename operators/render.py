@@ -34,7 +34,7 @@ class PackShotterRender(bpy.types.Operator):
                 blend_name = bpy.path.display_name(bpy.data.filepath)
                 bpy.context.scene.render.filepath = os.path.join(
                     self.node.folder, f"{blend_name}_{'_'.join(new_names)}.png")
-                bpy.ops.render.render(write_still=True)
+                bpy.ops.render.render(write_still=True, scene=self.node.scene.name)
 
 
 REGISTER_CLASSES = (PackShotterRender,)
