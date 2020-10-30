@@ -1,5 +1,5 @@
 from .utils import register_recursive, unregister_recursive
-from . import nodes, operators
+from . import sockets, nodes, operators
 
 
 bl_info = {
@@ -14,6 +14,7 @@ bl_info = {
 
 
 REGISTER_CLASSES = (
+    sockets,
     nodes,
     operators,
 )

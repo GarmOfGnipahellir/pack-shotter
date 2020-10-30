@@ -2,6 +2,7 @@ import bpy
 import nodeitems_utils
 from .common import PackShotterNode, PackShotterNodeCategory
 from ..operators import render
+from ..sockets.common import VariationsSocket
 
 
 class PackShotterRenderNode(PackShotterNode):
@@ -16,7 +17,7 @@ class PackShotterRenderNode(PackShotterNode):
         type=bpy.types.Scene, name="Scene", description="The scene to render")
 
     def init(self, context):
-        self.inputs.new('NodeSocketVirtual', "Input")
+        self.inputs.new(VariationsSocket.bl_idname, "Input")
 
     def draw_buttons(self, context, layout):
         layout.prop(self, "folder")

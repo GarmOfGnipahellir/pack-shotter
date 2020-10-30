@@ -2,6 +2,7 @@ import os
 import bpy
 import nodeitems_utils
 from .common import PackShotterNode, PackShotterNodeCategory
+from ..sockets.common import VariationsSocket
 
 
 # ---------------------------------------------------------------------------- #
@@ -24,8 +25,8 @@ class PackShotterVariationsNode(PackShotterNode):
             raise StopIteration
 
     def init(self, context):
-        self.inputs.new('NodeSocketVirtual', "Input")
-        self.outputs.new('NodeSocketVirtual', "Output")
+        self.inputs.new(VariationsSocket.bl_idname, "Input")
+        self.outputs.new(VariationsSocket.bl_idname, "Output")
 
     def apply_variation(self, index):
         raise NotImplementedError
@@ -158,10 +159,6 @@ class PackShotterMeshVariationsNode(PackShotterVariationsNode):
     meshes: bpy.props.CollectionProperty(
         type=MeshVariationsMesh, name="Meshes")
     active_mesh: bpy.props.IntProperty(default=0)
-
-    def init(self, context):
-        self.inputs.new('NodeSocketVirtual', "Input")
-        self.outputs.new('NodeSocketVirtual', "Output")
 
     def draw_buttons(self, context, layout):
         layout.prop(self, "obj")
