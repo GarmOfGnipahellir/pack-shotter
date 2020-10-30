@@ -12,8 +12,13 @@ class PackShotterRender(bpy.types.Operator):
 
     def execute(self, context):
         input_node = self.node.inputs[0].links[0].from_node
+        tmp_scene = context.window.scene
+
+        context.window.scene = self.node.scene
 
         self._render_recursive(input_node, [])
+
+        context.window.scene = tmp_scene
 
         return {'FINISHED'}
 
@@ -34,7 +39,7 @@ class PackShotterRender(bpy.types.Operator):
                 blend_name = bpy.path.display_name(bpy.data.filepath)
                 bpy.context.scene.render.filepath = os.path.join(
                     self.node.folder, f"{blend_name}_{'_'.join(new_names)}.png")
-                bpy.ops.render.render(write_still=True, scene=self.node.scene.name)
+                bpy.ops.render.render(write_still=True)
 
 
 REGISTER_CLASSES = (PackShotterRender,)
