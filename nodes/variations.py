@@ -23,6 +23,10 @@ class PackShotterVariationsNode(PackShotterNode):
         else:
             raise StopIteration
 
+    def init(self, context):
+        self.inputs.new('NodeSocketVirtual', "Input")
+        self.outputs.new('NodeSocketVirtual', "Output")
+
     def apply_variation(self, index):
         raise NotImplementedError
 
@@ -42,16 +46,11 @@ class PackShotterImageVariationsNode(PackShotterVariationsNode):
     bl_idname = "PackShotterImageVariationsNode"
     bl_label = "Image Variations"
     bl_icon = 'FILE_IMAGE'
-    bl_width_default = 200
 
     image: bpy.props.PointerProperty(type=bpy.types.Image, name="Image",
                                      description="The image that wil have it's file changed for different variations")
     folder: bpy.props.StringProperty(
         subtype='DIR_PATH', name="Folder", description="The folder which contains the image variations")
-
-    def init(self, context):
-        self.inputs.new('NodeSocketVirtual', "Input")
-        self.outputs.new('NodeSocketVirtual', "Output")
 
     def draw_buttons(self, context, layout):
         layout.prop(self, "image")
@@ -67,6 +66,34 @@ class PackShotterImageVariationsNode(PackShotterVariationsNode):
 
     def get_num_variations(self):
         return len(os.listdir(bpy.path.abspath(self.folder)))
+
+
+# ---------------------------------------------------------------------------- #
+#                             Collection Variations                            #
+# ---------------------------------------------------------------------------- #
+
+
+class PackShotterCollectionVariations(PackShotterVariationsNode):
+    bl_idname = "PackShotterCollectionVariations"
+    bl_label = "Collection Variations"
+    bl_icon = 'GROUP'
+
+    collection: bpy.props.PointerProperty(
+        type=bpy.types.Collection, name="Collection")
+
+    def draw_buttons(self, context, layout):
+        layout.prop(self, "collection")
+        
+    def apply_variation(self, index):
+        for i, child in enumerate(self.collection.children):
+            child.hide_render = False if i == index else True
+            child.hide_viewport = False if i == index else True
+
+    def get_variation_name(self, index):
+        return self.collection.children[index].name
+
+    def get_num_variations(self):
+        return len(self.collection.children)
 
 
 # ---------------------------------------------------------------------------- #
@@ -113,9 +140,8 @@ class MESH_UL_meshes(bpy.types.UIList):
 
 class PackShotterMeshVariationsNode(PackShotterVariationsNode):
     bl_idname = "PackShotterMeshVariationsNode"
-    bl_label = "Mesh Variations"
+    bl_label = "Mesh Variations (WIP)"
     bl_icon = 'FILE_IMAGE'
-    bl_width_default = 200
 
     obj: bpy.props.PointerProperty(type=bpy.types.Object, name="Object",
                                    description="The object that will have it's mesh changed for different variations")
@@ -151,12 +177,14 @@ class PackShotterMeshVariationsNode(PackShotterVariationsNode):
 
 category = PackShotterNodeCategory("VARIATIONS", "Variations", items=[
     nodeitems_utils.NodeItem(PackShotterImageVariationsNode.bl_idname),
+    nodeitems_utils.NodeItem(PackShotterCollectionVariations.bl_idname),
     nodeitems_utils.NodeItem(PackShotterMeshVariationsNode.bl_idname),
 ])
 
 
 REGISTER_CLASSES = (
     PackShotterImageVariationsNode,
+    PackShotterCollectionVariations,
     MeshVariationsMesh,
     AddMeshVariationsMesh,
     RemoveMeshVariationsMesh,

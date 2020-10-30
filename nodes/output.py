@@ -8,7 +8,6 @@ class PackShotterRenderNode(PackShotterNode):
     bl_idname = "PackShotterRenderNode"
     bl_label = "Render"
     bl_icon = 'RENDER_STILL'
-    bl_width_default = 200
 
     folder: bpy.props.StringProperty(
         subtype='DIR_PATH', name="Folder", description="The output folder")
