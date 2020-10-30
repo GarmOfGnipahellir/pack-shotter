@@ -60,12 +60,12 @@ class PackShotterImageVariationsNode(PackShotterVariationsNode):
         layout.prop(self, "folder")
 
     def apply_variation(self, index):
-        _tmp_filepath = self.image.filepath
+        self._tmp_filepath = self.image.filepath
         file = os.listdir(bpy.path.abspath(self.folder))[index]
         self.image.filepath = os.path.join(self.folder, file)
 
     def revert_variation(self):
-        self.image.filepath = _tmp_filepath
+        self.image.filepath = self._tmp_filepath
 
     def get_variation_name(self, index):
         file = os.listdir(bpy.path.abspath(self.folder))[index]
@@ -171,11 +171,11 @@ class PackShotterMeshVariationsNode(PackShotterVariationsNode):
         layout.operator(RemoveMeshVariationsMesh.bl_idname)
 
     def apply_variation(self, index):
-        _tmp_mesh = self.obj.data
+        self._tmp_mesh = self.obj.data
         self.obj.data = self.meshes[index].value
     
     def revert_variation(self):
-        self.obj.data = _tmp_mesh
+        self.obj.data = self._tmp_mesh
 
     def get_variation_name(self, index):
         return self.meshes[index].value.name
