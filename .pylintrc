@@ -1,1 +1,2 @@
-known-third-party=bpy
+known-third-party=bpy,
+                  addon_helper

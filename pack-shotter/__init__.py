@@ -1,14 +1,13 @@
-import os
-import bpy
 from .utils import register_recursive, unregister_recursive
 from . import nodes, operators
+
 
 bl_info = {
     "name": "Pack Shotter",
     "description": "A suite of tools for generating similar images with alot of variations.",
     "author": "Henrik Melsom",
     "version": (0, 1, 0),
-    "blender": (2, 90, 0),
+    "blender": (2, 90, 1),
     "support": "COMMUNITY",
     "category": "Generic"
 }
