@@ -10,7 +10,7 @@ class PackShotterNodeTree(bpy.types.NodeTree):
 
 class PackShotterNode(bpy.types.Node):
     bl_width_default = 200
-    
+
     @classmethod
     def poll(cls, ntree):
         return ntree.bl_idname == PackShotterNodeTree.bl_idname

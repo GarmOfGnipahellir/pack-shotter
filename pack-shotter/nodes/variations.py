@@ -173,7 +173,7 @@ class PackShotterMeshVariationsNode(PackShotterVariationsNode):
     def apply_variation(self, index):
         self._tmp_mesh = self.obj.data
         self.obj.data = self.meshes[index].value
-    
+
     def revert_variation(self):
         self.obj.data = self._tmp_mesh
 
